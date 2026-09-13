@@ -1,0 +1,20 @@
+[
+  {
+    "id": "dbs",
+    "file": "dbs-fy2025-results.pdf",
+    "title": "DBS FY2025 results press statement",
+    "issuer": "DBS Group Holdings Ltd",
+    "date": "2026-02-09",
+    "url": "https://www.dbs.com/iwov-resources/images/investors/quarterly-financials/2025/4Q25_press_statement.pdf",
+    "sha256": "d76c280e63920eed750b08d1ca746263753a590418689f30c1a79754ed57c926"
+  },
+  {
+    "id": "sgx",
+    "file": "sgx-fy2025-results.pdf",
+    "title": "SGX FY2025 results news release",
+    "issuer": "Singapore Exchange Limited",
+    "date": "2025-08-08",
+    "url": "https://links.sgx.com/1.0.0/corporate-announcements/XUUV259STK54LDMT/854754_1.%20SGX%20Group%20reports%20FY2025%20net%20profit%20of%20S%24610%20million.pdf",
+    "sha256": "f62f844788a02b63093d0c19a7f01e454936b424b00f5a180e78315c80b83a09"
+  }
+]

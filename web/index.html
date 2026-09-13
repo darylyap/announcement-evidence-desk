@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Announcement Evidence Desk</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/tooltips.js" defer></script>
+    <script src="/static/features.js" defer></script>
+    <script src="/static/assessments.js" defer></script>
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/"
+        ><span class="brand-mark">E</span
+        ><span>Evidence Desk<small>ANNOUNCEMENT REVIEW</small></span></a
+      ><button class="primary new-case">+ New review</button>
+      <button class="text-button" id="toggleNavigation" aria-expanded="false">
+        Show reviews and filters
+      </button>
+      <div class="section-label">
+        YOUR WORKSPACE <span id="caseCount">0</span>
+      </div>
+      <label class="sidebar-control"
+        >Workspace<select id="workspaceFilter">
+          <option value="">All workspaces</option>
+        </select></label
+      >
+      <button class="text-button" id="manageWorkspaces">
+        Manage workspaces
+      </button>
+      <label class="sidebar-control"
+        >Search<input
+          id="caseSearch"
+          type="search"
+          placeholder="Company or news title"
+      /></label>
+      <label class="sidebar-control"
+        >Company<select id="companyFilter">
+          <option value="">All companies</option>
+        </select></label
+      >
+      <div class="filter-row">
+        <select id="topicFilter" aria-label="Filter topic">
+          <option value="">All topics</option>
+          <option>Results</option>
+          <option>Corporate action</option>
+          <option>Acquisition</option>
+          <option>Governance</option>
+          <option>Other</option></select
+        ><select id="stageFilter" aria-label="Filter workflow">
+          <option value="active">Active reviews</option>
+          <option value="">All stages</option>
+          <option value="open">Open</option>
+          <option value="in_review">In review</option>
+          <option value="follow_up">Follow-up</option>
+          <option value="closed">Closed</option>
+          <option value="archived">Archived</option>
+        </select>
+      </div>
+      <button class="text-button" id="examplesButton">
+        Real-source examples
+      </button>
+      <nav id="cases" aria-label="Review cases"></nav>
+      <div class="sidebar-bottom">
+        <span class="status-dot"></span
+        ><span id="providerBadge">Checking model…</span
+        ><button class="text-button" id="settingsButton">Settings</button
+        ><button class="text-button" id="helpButton">Help</button>
+      </div>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <h1 id="heading">From a claim to its evidence.</h1>
+        </div>
+        <div id="headerActions"></div>
+      </header>
+      <div id="message" role="status" aria-live="polite" hidden></div>
+      <div id="workspace">
+        <section class="welcome">
+          <span class="eyebrow">A REVIEW YOU CAN TRACE</span>
+          <h2>Read the claim.<br />Check the source.<br />Make the call.</h2>
+          <p>
+            Compare factual claims with issuer documents. AI proposes findings;
+            you inspect the evidence and assess each claim.
+          </p>
+          <div class="welcome-actions">
+            <button class="primary new-case">Create your first review</button
+            ><button class="secondary" id="sampleButton">
+              Browse real-source examples
+            </button>
+          </div>
+          <div class="steps">
+            <div>
+              <b>01</b>
+              <h3>Bring the sources</h3>
+              <p>
+                Enter claims to check. Upload evidence documents or import
+                official links.
+              </p>
+            </div>
+            <div>
+              <b>02</b>
+              <h3>Inspect the evidence</h3>
+              <p>Compare claims with exact quotations and page references.</p>
+            </div>
+            <div>
+              <b>03</b>
+              <h3>Record your judgement</h3>
+              <p>Assess each claim and copy a review brief for handoff.</p>
+            </div>
+          </div>
+          <div class="scope-note">
+            No automatic compliance decisions. Results concern only the
+            documents you supply.
+          </div>
+        </section>
+      </div>
+    </main>
+    <dialog id="caseDialog">
+      <form id="caseForm">
+        <div class="dialog-top">
+          <div>
+            <span class="eyebrow">START A REVIEW</span>
+            <h2>What are you checking?</h2>
+          </div>
+          <button
+            type="button"
+            class="close"
+            data-close="caseDialog"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <button
+          type="button"
+          class="help-trigger"
+          data-help="Enter the statement you want to verify, or a short news excerpt. You will attach independent evidence in the next step. Up to four claims are checked."
+          aria-label="Claim input help"
+        >
+          Claim input help ⓘ
+        </button>
+        <label
+          >Review title<input
+            name="title"
+            required
+            minlength="3"
+            maxlength="300"
+            placeholder="e.g. First-half results coverage"
+        /></label>
+        <div class="form-row">
+          <label
+            >Workspace<select
+              name="workspace_id"
+              id="newCaseWorkspace"
+            ></select></label
+          ><label
+            >Topic<select name="topic">
+              <option>Results</option>
+              <option>Corporate action</option>
+              <option>Acquisition</option>
+              <option>Governance</option>
+              <option>Other</option>
+            </select></label
+          >
+        </div>
+        <div class="form-row">
+          <label
+            >Issuer / legal entity<input
+              name="issuer"
+              required
+              minlength="2"
+              maxlength="200"
+              placeholder="Company name" /></label
+          ><label
+            >Claim date / as-of date<input
+              type="date"
+              name="article_date"
+              required
+          /></label>
+        </div>
+        <label
+          >Where the claim came from <span class="optional">optional</span
+          ><input name="source_url" type="url" placeholder="https://…"
+        /></label>
+        <details class="input-help">
+          <summary>Import claims from a file or official link</summary>
+          <button
+            type="button"
+            class="help-trigger"
+            data-help="Optional: import an excerpt instead of typing. The claim-origin link above records where the statement came from; it is not automatically used as evidence."
+            aria-label="About claim origins"
+          >
+            About claim origins ⓘ
+          </button>
+          <button type="button" class="secondary" id="fetchArticle">
+            Import text from the claim link</button
+          ><label class="drop-zone" id="articleDrop"
+            >Choose or drop a claim file<input
+              type="file"
+              id="articleFile"
+              accept=".pdf,.docx,.txt,.md"
+            /><span class="muted"
+              >PDF, DOCX, TXT or MD · up to 4 MB. Check the extracted text
+              below.</span
+            ></label
+          >
+          <p id="articleImportStatus" role="status" class="muted"></p>
+        </details>
+        <label
+          >Claims to check<textarea
+            name="article"
+            required
+            minlength="20"
+            maxlength="12000"
+            rows="5"
+            placeholder="Example: DBS Group reported total income of SGD 28.9 billion for the full year 2025."
+          ></textarea>
+        </label>
+        <button
+          type="button"
+          class="help-trigger"
+          data-help="20–12,000 characters. A single factual sentence is enough; a full article is not required. Use the statement’s date, or the date you want to check it as of."
+          aria-label="Input limit and date help"
+        >
+          Input limit and date help ⓘ
+        </button>
+        <p class="form-error" id="caseError" role="alert"></p>
+        <div class="dialog-footer">
+          <button type="button" class="secondary" data-close="caseDialog">
+            Cancel</button
+          ><button class="primary" type="submit">Create review</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="docDialog">
+      <form id="docForm">
+        <div class="dialog-top">
+          <div>
+            <span class="eyebrow">SOURCE MATERIAL</span>
+            <h2>Add announcement evidence</h2>
+          </div>
+          <button
+            class="close"
+            type="button"
+            data-close="docDialog"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Document title<input
+            name="title"
+            required
+            minlength="3"
+            maxlength="300"
+            placeholder="e.g. Financial results for 1H 2026"
+        /></label>
+        <label
+          >Published on <span class="optional">optional</span
+          ><input name="published_date" type="date"
+        /></label>
+        <p class="muted" id="documentEditHint">
+          Upload a document OR enter its official link. Text is extracted
+          automatically; you do not need to paste it.
+        </p>
+        <label id="pdfInput" class="drop-zone"
+          >Choose or drop an evidence file<input
+            type="file"
+            name="file"
+            accept=".pdf,.docx,.txt,.md"
+          /><span class="muted"
+            >PDF, DOCX, TXT or MD · one file · up to 4 MB. PDFs: up to 40 pages.
+            Scans and images need OCR first.</span
+          ></label
+        >
+        <button type="button" class="text-button" id="clearEvidenceFile" hidden>
+          Clear selected file
+        </button>
+        <p class="input-divider">or fetch the document</p>
+        <label
+          >Official evidence link<input
+            name="source_url"
+            type="url"
+            placeholder="https://…"
+        /></label>
+        <button
+          type="button"
+          class="help-trigger"
+          data-help="A direct PDF link is best. Fetching a link attaches its content; no separate upload is needed. Supported sites: SGX, DBS, Singtel, OCBC and UOB."
+          aria-label="Evidence link help"
+        >
+          Evidence link help ⓘ
+        </button>
+        <div id="linkTools" hidden>
+          <button type="button" class="text-button" id="inspectLink">
+            Find linked PDFs</button
+          ><button
+            type="button"
+            class="help-trigger"
+            data-help="Optional: use this when your URL is a cover page listing PDF attachments. Uploaded files and direct document links can be saved immediately."
+            aria-label="About finding linked PDFs"
+          >
+            ⓘ
+          </button>
+          <div id="linkAttachments"></div>
+        </div>
+        <button
+          type="button"
+          class="help-trigger"
+          data-help="Published on is the evidence document’s publication date. Leave it blank if unknown; timing cannot then be checked."
+          aria-label="Publication date help"
+        >
+          Publication date help ⓘ
+        </button>
+        <p class="form-error" id="docError" role="alert"></p>
+        <div class="dialog-footer">
+          <button type="button" class="secondary" data-close="docDialog">
+            Cancel</button
+          ><button class="primary" type="submit">Save document</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="settingsDialog">
+      <form id="settingsForm">
+        <div class="dialog-top">
+          <h2>Workspace settings</h2>
+          <button
+            type="button"
+            class="close"
+            data-close="settingsDialog"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <div id="modelDetails" class="notice"></div>
+        <label id="localProviderChoice" hidden
+          >Model for new analyses<select id="localProvider">
+            <option value="ollama">Ollama</option>
+            <option value="gemini">Gemini</option></select
+          ><span class="muted"
+            >Uses server-side credentials and installed models. Existing
+            analyses keep their original model record.</span
+          ></label
+        >
+        <label
+          >Workspace access key<input
+            id="accessKey"
+            type="password"
+            autocomplete="off"
+            placeholder="Only required if configured by the owner"
+        /></label>
+        <p class="muted">
+          Paste the workspace key supplied with your invitation, without
+          quotation marks. It protects the shared review workspace and is held
+          for this browser tab.
+        </p>
+        <p class="form-error" id="settingsError" role="alert"></p>
+        <button class="primary" type="submit">Save and reconnect</button>
+      </form>
+    </dialog>
+    <dialog id="featureDialog">
+      <div class="dialog-top">
+        <h2 id="featureTitle"></h2>
+        <button
+          type="button"
+          class="close"
+          data-close="featureDialog"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+      <div id="featureBody"></div>
+    </dialog>
+    <dialog id="sourceDialog">
+      <div class="dialog-top">
+        <h2 id="sourceTitle">Source document</h2>
+        <button
+          type="button"
+          class="close"
+          data-close="sourceDialog"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+      <div id="sourceBody"></div>
+    </dialog>
+  </body>
+</html>
